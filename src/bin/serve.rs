@@ -45,7 +45,12 @@ fn handle(req: tiny_http::Request, www_dir: &Path) {
 
     let url = req.url().to_string();
     let url_path = url.split('?').next().unwrap_or("/");
-    let url_path = if url_path == "/" { "/index.html" } else { url_path }.to_string();
+    let url_path = if url_path == "/" {
+        "/index.html"
+    } else {
+        url_path
+    }
+    .to_string();
 
     if url_path.contains("..") {
         let _ = req.respond(Response::empty(StatusCode(403)));
@@ -57,7 +62,9 @@ fn handle(req: tiny_http::Request, www_dir: &Path) {
 
     match fs::read(&file_path) {
         Ok(body) => {
-            let ct: Header = format!("Content-Type: {}", content_type(&url_path)).parse().unwrap();
+            let ct: Header = format!("Content-Type: {}", content_type(&url_path))
+                .parse()
+                .unwrap();
             let cors: Header = "Access-Control-Allow-Origin: *".parse().unwrap();
             let response = Response::from_data(body).with_header(ct).with_header(cors);
             println!("200 GET {url_path}");
@@ -72,11 +79,19 @@ fn handle(req: tiny_http::Request, www_dir: &Path) {
 }
 
 fn content_type(path: &str) -> &'static str {
-    if path.ends_with(".html") { "text/html; charset=utf-8" }
-    else if path.ends_with(".js") { "application/javascript" }
-    else if path.ends_with(".wasm") { "application/wasm" }
-    else if path.ends_with(".css") { "text/css" }
-    else if path.ends_with(".png") { "image/png" }
-    else if path.ends_with(".json") { "application/json" }
-    else { "application/octet-stream" }
+    if path.ends_with(".html") {
+        "text/html; charset=utf-8"
+    } else if path.ends_with(".js") {
+        "application/javascript"
+    } else if path.ends_with(".wasm") {
+        "application/wasm"
+    } else if path.ends_with(".css") {
+        "text/css"
+    } else if path.ends_with(".png") {
+        "image/png"
+    } else if path.ends_with(".json") {
+        "application/json"
+    } else {
+        "application/octet-stream"
+    }
 }
