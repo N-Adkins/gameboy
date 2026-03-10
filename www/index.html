@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GameBoy</title>
+    <style>
+        body { font-family: monospace; background: #111; color: #0f0; padding: 20px; margin: 0; }
+        h1 { margin-top: 0; }
+        #output { margin-top: 16px; line-height: 1.6; }
+        .ok  { color: #0f0; }
+        .err { color: #f44; }
+    </style>
+</head>
+<body>
+    <h1>GameBoy</h1>
+    <script type="module">
+        import init from './pkg/gameboy.js';
+
+        async function run() {
+            await init();
+        }
+
+        run().catch(err => {
+            document.getElementById('output').innerHTML =
+                `<p class="err">Error: ${err.message}</p>`;
+        });
+    </script>
+</body>
+</html>
